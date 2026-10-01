@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>录音调频网站</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="stage">
+    <header class="topbar">
+      <div class="brand">
+        <span class="orn">◆</span>
+        <h1 class="brand-title">录音调频网站</h1>
+        <span class="orn">◆</span>
+      </div>
+      <div class="status-cluster">
+        <button id="btnEngine" class="btn btn-gold">启动引擎</button>
+        <div class="status-line"><span class="k">状态</span><span id="status">未启动</span></div>
+        <div class="status-line"><span class="k">延迟</span><span id="latency">-</span></div>
+        <div class="status-line"><span class="k">设备</span><span id="devices">-</span></div>
+        <div class="meter-box" title="输入电平">
+          <span class="k">输入</span>
+          <div class="meter-track"><div id="meterFill" class="meter-fill"></div></div>
+        </div>
+      </div>
+      <div id="btWarn" class="warn" hidden>⚠️ 检测到蓝牙/无线音频设备，耳返延迟可能偏高，建议使用有线耳机。</div>
+      <div id="err" class="err" hidden></div>
+    </header>
+
+    <section class="transport">
+      <button id="btnPlay" class="btn">播放</button>
+      <button id="btnStop" class="btn btn-outline">回开头</button>
+      <button id="btnLoop" class="btn btn-outline">循环</button>
+      <button id="btnRecord" class="btn btn-gold">录音</button>
+      <button id="btnImport" class="btn btn-outline">导入伴奏</button>
+      <button id="btnExport" class="btn btn-outline">导出 WAV</button>
+      <label class="switch">
+        <input type="checkbox" id="swMonitor" checked />
+        <span>耳返</span>
+      </label>
+      <div class="channel-toggle" role="group" aria-label="声道模式">
+        <span class="ch-label">声道</span>
+        <button id="btnChMono" class="chip active" type="button">单声道</button>
+        <button id="btnChStereo" class="chip" type="button">双声道</button>
+      </div>
+      <button id="btnUndo" class="btn btn-outline">撤销</button>
+    </section>
+
+    <section class="tracks">
+      <div class="track">
+        <div class="track-head">
+          <span class="track-name">伴奏</span>
+          <span class="track-meta" id="backingName">未导入</span>
+          <button id="btnDeleteBacking" class="track-del" title="删除伴奏">删除</button>
+        </div>
+        <canvas id="trackBacking" class="track-canvas"></canvas>
+      </div>
+      <div class="track">
+        <div class="track-head">
+          <span class="track-name vocal">人声</span>
+          <span class="track-meta" id="recStatus">尚未录音</span>
+          <button id="btnDeleteVocal" class="track-del" title="删除录音">删除</button>
+        </div>
+        <canvas id="trackVocal" class="track-canvas"></canvas>
+      </div>
+      <div class="timeline-hud">
+        <span class="hud-item">位置 <output id="tlPos">0.00</output> s</span>
+        <span class="hud-item">裁剪 <output id="tlTrimStart">0.00</output>s – <output id="tlTrimEnd">0.00</output>s</span>
+      </div>
+    </section>
+
+    <section class="fx-panel">
+      <div class="fx-col">
+        <h2 class="panel-title">参数均衡 · EQ</h2>
+        <div id="eqKnobs" class="eq-host"></div>
+      </div>
+      <div class="fx-divider"></div>
+      <div class="fx-col">
+        <h2 class="panel-title">混响 · Reverb</h2>
+        <div id="reverbKnobs" class="reverb-host"></div>
+      </div>
+      <div class="fx-divider"></div>
+      <div class="fx-col fx-vol">
+        <h2 class="panel-title">音量</h2>
+        <div class="fader-row">
+          <div id="faderVocal" class="fader-slot"></div>
+          <div id="faderBacking" class="fader-slot"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="project-bar">
+      <input type="text" id="txtProjectName" placeholder="工程名称" />
+      <button id="btnSaveProject" class="btn btn-outline">保存工程</button>
+      <span class="project-status" id="projectStatus"></span>
+      <div id="projectList" class="proj-list"></div>
+    </footer>
+  </main>
+
+  <input type="file" id="fileBacking" accept=".mp3,.m4a,.wav,.aac,audio/*" hidden />
+  <script src="app.js"></script>
+</body>
+</html>
